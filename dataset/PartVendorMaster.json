@@ -1,0 +1,34 @@
+{
+	"name": "PartVendorMaster",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "vendorNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "vendorName",
+				"type": "varchar"
+			},
+			{
+				"name": "isActive",
+				"type": "varchar"
+			},
+			{
+				"name": "ActiveVendor",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PartVendorMaster"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

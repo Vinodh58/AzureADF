@@ -1,0 +1,63 @@
+{
+	"name": "PartsPurchaseOrder_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "orderNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "partNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "lineItemNumber",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "orderQuantity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "shipToDealer",
+				"type": "varchar"
+			},
+			{
+				"name": "dateEntered",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "dateToPo",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "classCode",
+				"type": "varchar"
+			},
+			{
+				"name": "distributorPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "_audit_created_datetime",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PartsPurchaseOrder"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,64 @@
+{
+	"name": "Test",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ds",
+					"value": {
+						"value": "@string(sub(div(ticks(pipeline().parameters.param_current_ts),10000000),div(ticks(pipeline().parameters.param_epoch),10000000)))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ds",
+					"value": {
+						"value": "@string(sub(div(ticks(formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss.sss')),10000000),div(ticks(pipeline().parameters.param_epoch),10000000)))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"param_epoch": {
+				"type": "String",
+				"defaultValue": "1970-01-01T00:00:00Z"
+			},
+			"param_current_ts": {
+				"type": "String",
+				"defaultValue": "2022-06-30T00:00:00Z"
+			}
+		},
+		"variables": {
+			"datetimes": {
+				"type": "String"
+			},
+			"ds": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-17T15:04:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

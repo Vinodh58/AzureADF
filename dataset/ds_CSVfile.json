@@ -1,0 +1,65 @@
+{
+	"name": "ds_CSVfile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "VA2",
+				"fileSystem": "csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "Fleetind",
+				"type": "String"
+			},
+			{
+				"name": "Dealer",
+				"type": "String"
+			},
+			{
+				"name": "Model",
+				"type": "String"
+			},
+			{
+				"name": "My",
+				"type": "String"
+			},
+			{
+				"name": "Phasecd",
+				"type": "String"
+			},
+			{
+				"name": "Vin",
+				"type": "String"
+			},
+			{
+				"name": "Ivin",
+				"type": "String"
+			},
+			{
+				"name": "SaleDt",
+				"type": "String"
+			},
+			{
+				"name": "ReportedDt",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

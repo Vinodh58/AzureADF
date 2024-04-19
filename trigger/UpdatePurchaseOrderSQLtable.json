@@ -1,0 +1,25 @@
+{
+	"name": "UpdatePurchaseOrderSQLtable",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Purchase Order Extraction to SQL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-04-14T08:30:00",
+				"endTime": "2024-05-01T20:10:00",
+				"timeZone": "Eastern Standard Time"
+			}
+		}
+	}
+}

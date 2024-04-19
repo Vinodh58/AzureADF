@@ -1,0 +1,54 @@
+{
+	"name": "ds_ToSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "Fltind",
+				"type": "varchar"
+			},
+			{
+				"name": "Dealer",
+				"type": "varchar"
+			},
+			{
+				"name": "Model",
+				"type": "varchar"
+			},
+			{
+				"name": "ModelYear",
+				"type": "varchar"
+			},
+			{
+				"name": "Phasecd",
+				"type": "varchar"
+			},
+			{
+				"name": "Vin",
+				"type": "varchar"
+			},
+			{
+				"name": "Plantcd",
+				"type": "varchar"
+			},
+			{
+				"name": "Reported_dt",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VA2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

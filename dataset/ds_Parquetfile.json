@@ -1,0 +1,62 @@
+{
+	"name": "ds_Parquetfile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "VA2.parquet",
+				"fileSystem": "parquet"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Status",
+				"type": "UTF8"
+			},
+			{
+				"name": "Fleetind",
+				"type": "UTF8"
+			},
+			{
+				"name": "Dealer",
+				"type": "UTF8"
+			},
+			{
+				"name": "Model",
+				"type": "UTF8"
+			},
+			{
+				"name": "My",
+				"type": "UTF8"
+			},
+			{
+				"name": "Phasecd",
+				"type": "UTF8"
+			},
+			{
+				"name": "Vin",
+				"type": "UTF8"
+			},
+			{
+				"name": "Ivin",
+				"type": "UTF8"
+			},
+			{
+				"name": "SaleDt",
+				"type": "UTF8"
+			},
+			{
+				"name": "ReportedDt",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

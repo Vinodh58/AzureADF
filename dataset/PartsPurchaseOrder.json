@@ -1,0 +1,16 @@
+{
+	"name": "PartsPurchaseOrder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MongoAWSDH",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MongoDbV2Collection",
+		"schema": [],
+		"typeProperties": {
+			"collection": "PartsPurchaseOrder"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

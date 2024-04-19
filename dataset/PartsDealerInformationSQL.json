@@ -1,0 +1,42 @@
+{
+	"name": "PartsDealerInformationSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "partsDealerNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "partsDealerName",
+				"type": "varchar"
+			},
+			{
+				"name": "partsDealerAddress",
+				"type": "varchar"
+			},
+			{
+				"name": "partsDealerCityStateZip",
+				"type": "varchar"
+			},
+			{
+				"name": "partsDealerState",
+				"type": "varchar"
+			},
+			{
+				"name": "partsDealerZip",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PartsDealerInformation"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

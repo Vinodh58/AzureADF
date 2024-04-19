@@ -1,0 +1,267 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get UTC",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Currentday",
+					"value": {
+						"value": "@formatDateTime(utcNow('yyyy-MM-dd'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy Orders to SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"filter": {
+							"value": "{ \"entity.orderDate\": { $gte: ISODate(\"2024-03-29T00:00:00.000+0000\") } }",
+							"type": "Expression"
+						},
+						"cursorMethods": {
+							"project": "{\"entity.orderNumber\": 1, \"entity.partNumber\": 1, \"entity.distributorPrice\": 1, \"entity.orderQuantity\": 1, \"entity.dealerNumber\": 1, \"entity.orderDate\": 1, \"entity.classBase\": 1, \"entity.orderTypeCode\": 1, \"entity.orderSequenceNumber\": 1, \"_audit_created_datetime\": 1, \"entity.dateToTMS\": 1, \"entity.directShipmentIndicator\": 1, \"entity.backOrderedQuantity\": 1}"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"partNumber",
+								"orderTypeCode",
+								"orderDate",
+								"dealerNumber",
+								"orderSequenceNumber",
+								"_audit_created_datetime"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['_audit_created_datetime']['$date']"
+								},
+								"sink": {
+									"name": "_audit_created_datetime",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partNumber']"
+								},
+								"sink": {
+									"name": "partNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderTypeCode']"
+								},
+								"sink": {
+									"name": "orderTypeCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderDate']['$date']"
+								},
+								"sink": {
+									"name": "orderDate",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dealerNumber']"
+								},
+								"sink": {
+									"name": "dealerNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderNumber']"
+								},
+								"sink": {
+									"name": "orderNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderSequenceNumber']"
+								},
+								"sink": {
+									"name": "orderSequenceNumber",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['backOrderedQuantity']"
+								},
+								"sink": {
+									"name": "backOrderedQuantity",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['distributorPrice']['$numberDecimal']"
+								},
+								"sink": {
+									"name": "distributorPrice",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['classBase']"
+								},
+								"sink": {
+									"name": "classBase",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dateToTMS']['$date']"
+								},
+								"sink": {
+									"name": "dateToTMS",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderQuantity']"
+								},
+								"sink": {
+									"name": "orderQuantity",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['directShipmentIndicator']"
+								},
+								"sink": {
+									"name": "directShipmentIndicator",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PartsCustomerBackOrder",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PartsCustomerBackOrder_SQL",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Get UTC_copy1",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dot",
+					"value": {
+						"value": ".",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Currdate",
+					"value": {
+						"value": "{ \"entity.orderDate\": ISODate(\"2024-04-01T00:00:00Z\") }",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Currentday": {
+				"type": "String"
+			},
+			"dot": {
+				"type": "String"
+			},
+			"replacedts": {
+				"type": "String"
+			},
+			"Currdate": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-03T15:59:54Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

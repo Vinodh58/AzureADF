@@ -1,0 +1,43 @@
+{
+	"name": "PartsCustomerBackOrder_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "orderNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "partNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "distributorPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "orderQuantity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "dealerNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "orderDate",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PartsCustomerBackOrder"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

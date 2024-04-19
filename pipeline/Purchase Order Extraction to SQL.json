@@ -1,0 +1,378 @@
+{
+	"name": "Purchase Order Extraction to SQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set UTC Now",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "UTC_NOW",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Check Last File Existence",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Set UTC Now",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_LastExec_csvfile",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Check Last File Existence",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Check Last File Existence').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Read last execution",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_LastExec_csvfile",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set UTC Last",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Read last execution",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Set UTC Last",
+								"value": {
+									"value": "@activity('Read last execution').output.firstRow.LASTEXECUTION",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy to SQL PartsPurchaseOrder",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"filter": {
+							"value": "{ \"_audit_updated_datetime\": { $gte: ISODate(\"@{variables('Set UTC Last')}\") }, $and: [ { \"_audit_updated_datetime\": { $lt: ISODate(\"@{variables('UTC_NOW')}\") } } ] }",
+							"type": "Expression"
+						},
+						"cursorMethods": {
+							"project": "{\"entity.orderNumber\": 1, \"entity.partNumber\": 1, \"entity.lineItemNumber\": 1, \"entity.orderQuantity\": 1, \"entity.shipToDealer\": 1, \"entity.dateEntered\": 1, \"entity.dateToPo\": 1, \"entity.classCode\": 1, \"entity.distributorPrice\": 1, \"_audit_updated_datetime\": 1, \"entity.dateReceived\": 1, \"entity.packingListQuantity\": 1, \"entity.quantityInTransit\": 1, \"entity.dateETA\": 1}"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"orderNumber",
+								"partNumber",
+								"lineItemNumber"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['_audit_updated_datetime']['$date']"
+								},
+								"sink": {
+									"name": "_audit_created_datetime",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderNumber']"
+								},
+								"sink": {
+									"name": "orderNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partNumber']"
+								},
+								"sink": {
+									"name": "partNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['lineItemNumber']"
+								},
+								"sink": {
+									"name": "lineItemNumber",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['classCode']"
+								},
+								"sink": {
+									"name": "classCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['shipToDealer']"
+								},
+								"sink": {
+									"name": "shipToDealer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['distributorPrice']['$numberDecimal']"
+								},
+								"sink": {
+									"name": "distributorPrice",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['orderQuantity']"
+								},
+								"sink": {
+									"name": "orderQuantity",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dateEntered']['$date']"
+								},
+								"sink": {
+									"name": "dateEntered",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dateToPo']['$date']"
+								},
+								"sink": {
+									"name": "dateToPo",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dateETA']['$date']"
+								},
+								"sink": {
+									"name": "dateETA",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dateReceived']['$date']"
+								},
+								"sink": {
+									"name": "dateReceived",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['packingListQuantity']"
+								},
+								"sink": {
+									"name": "packingListQuantity",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['quantityInTransit']"
+								},
+								"sink": {
+									"name": "quantityInTransit",
+									"type": "Int32"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PartsPurchaseOrder",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PartsPurchaseOrder_SQL",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Update last execution",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy to SQL PartsPurchaseOrder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2023-01-03",
+						"x-ms-blob-type": "BlockBlob"
+					},
+					"url": "https://vinodexplorsa.blob.core.windows.net/output/Last_Execution.csv",
+					"body": {
+						"value": "LASTEXECUTION\n@{variables('UTC_NOW')}",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
+				}
+			}
+		],
+		"variables": {
+			"UTC_NOW": {
+				"type": "String"
+			},
+			"Set UTC Last": {
+				"type": "String"
+			},
+			"datetimes": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-05T18:13:44Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

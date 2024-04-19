@@ -1,0 +1,13 @@
+{
+	"name": "MongoAWSDH",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "MongoDbV2",
+		"typeProperties": {
+			"connectionString": "mongodb://prod-set-dach-ro:@set-integration-dighub-ep-shard-00-00-at32f.mongodb.net/?authSource=admin;tls=true;replicaSet=set-integration-dighub-ep-shard-0",
+			"database": "prod-set-digitalhub",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEMxNzFGNEU3LTEyQjgtNDQzMi1BQTNFLUZFNDNEMzNEODRFN183MzFjZmUxNS0zNTlmLTQyOWItOGVkOS1hOGVmZDBhOGI2NTUiDQp9"
+		}
+	}
+}

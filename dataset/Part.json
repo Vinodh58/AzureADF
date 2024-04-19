@@ -1,0 +1,16 @@
+{
+	"name": "Part",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MongoAWSDH",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MongoDbV2Collection",
+		"schema": [],
+		"typeProperties": {
+			"collection": "Part"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

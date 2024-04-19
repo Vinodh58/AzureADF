@@ -1,0 +1,9 @@
+{
+	"name": "vinodhpocadf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "81b3e87a-10e0-4a96-b6ae-dc042eb171ae",
+		"tenantId": "e2ba673a-b782-4f44-b0b5-93da90258200"
+	}
+}

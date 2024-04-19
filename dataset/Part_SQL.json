@@ -1,0 +1,60 @@
+{
+	"name": "Part_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "partNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "vendorNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "vendorName",
+				"type": "varchar"
+			},
+			{
+				"name": "packageType",
+				"type": "varchar"
+			},
+			{
+				"name": "unitsPerPackage",
+				"type": "decimal",
+				"precision": 3,
+				"scale": 2
+			},
+			{
+				"name": "pio",
+				"type": "varchar"
+			},
+			{
+				"name": "dio",
+				"type": "varchar"
+			},
+			{
+				"name": "effectiveDate",
+				"type": "date"
+			},
+			{
+				"name": "endDate",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Part"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

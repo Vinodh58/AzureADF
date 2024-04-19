@@ -1,0 +1,346 @@
+{
+	"name": "01-Copy-Mongo-to-SQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Parts Collection to SQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"cursorMethods": {
+							"project": "{\"entity.partNumber\": 1, \"entity.description\": 1, \"entity.vendorNumber\": 1, \"entity.vendorName\": 1, \"entity.packageType\": 1, \"entity.unitsPerPackage\": 1, \"entity.pio\": 1, \"entity.dio\": 1, \"entity.effectiveDate\": 1, \"entity.endDate\": 1}"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"partNumber"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['entity']['partNumber']"
+								},
+								"sink": {
+									"name": "partNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['description']"
+								},
+								"sink": {
+									"name": "description",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['vendorNumber']"
+								},
+								"sink": {
+									"name": "vendorNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['vendorName']"
+								},
+								"sink": {
+									"name": "vendorName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['packageType']"
+								},
+								"sink": {
+									"name": "packageType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['unitsPerPackage']['$numberDecimal']"
+								},
+								"sink": {
+									"name": "unitsPerPackage",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['pio']"
+								},
+								"sink": {
+									"name": "pio",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['dio']"
+								},
+								"sink": {
+									"name": "dio",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Part",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Part_SQL",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy PartsVendorMaster Collection to SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy Parts Collection to SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"cursorMethods": {
+							"project": "{\"entity.vendorNumber\": 1, \"entity.vendorName\": 1, \"entity.isActive\": 1, \"entity.ActiveVendor\": 1}"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"vendorNumber"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['entity']['vendorNumber']"
+								},
+								"sink": {
+									"name": "vendorNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['vendorName']"
+								},
+								"sink": {
+									"name": "vendorName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['ActiveVendor']"
+								},
+								"sink": {
+									"name": "ActiveVendor",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['isActive']"
+								},
+								"sink": {
+									"name": "isActive",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PartsVendorMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PartVendorMaster",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy PartsDealerInformation Collection to SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy PartsVendorMaster Collection to SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"filter": "",
+						"cursorMethods": {
+							"project": "{\"entity.partsDealerNumber\": 1, \"entity.partsDealerName\": 1, \"entity.partsDealerAddress\": 1, \"entity.partsDealerCityStateZip\": 1, \"entity.partsDealerState\": 1, \"entity.partsDealerZip\": 1}"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"partsDealerNumber"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['entity']['partsDealerNumber']"
+								},
+								"sink": {
+									"name": "partsDealerNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partsDealerName']"
+								},
+								"sink": {
+									"name": "partsDealerName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partsDealerAddress']"
+								},
+								"sink": {
+									"name": "partsDealerAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partsDealerCityStateZip']"
+								},
+								"sink": {
+									"name": "partsDealerCityStateZip",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partsDealerState']"
+								},
+								"sink": {
+									"name": "partsDealerState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['entity']['partsDealerZip']"
+								},
+								"sink": {
+									"name": "partsDealerZip",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PartsDealerInformation",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PartsDealerInformationSQL",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-04-12T12:31:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
