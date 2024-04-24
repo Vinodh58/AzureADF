@@ -1,0 +1,70 @@
+{
+	"name": "TrafficlotdatainSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PORT-CD",
+				"type": "varchar"
+			},
+			{
+				"name": "SEQ-NBR-04",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PORT-CD-03",
+				"type": "varchar"
+			},
+			{
+				"name": "VEH-BLOCK-LOCN",
+				"type": "varchar"
+			},
+			{
+				"name": "VEH-ROW-LOCN",
+				"type": "varchar"
+			},
+			{
+				"name": "LOCN-STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "YES-NO-IND-01",
+				"type": "varchar"
+			},
+			{
+				"name": "VIN",
+				"type": "varchar"
+			},
+			{
+				"name": "DFLT-STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "VA-VEH-BLOCK-LOCN",
+				"type": "varchar"
+			},
+			{
+				"name": "VA-VEH-ROW-LOCN",
+				"type": "varchar"
+			},
+			{
+				"name": "VA-LOCN-STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "VA-SHIPPED-DT",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Trafficlotdata"
+		}
+	}
+}
